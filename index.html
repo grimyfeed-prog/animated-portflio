@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DK &bull; ALYSSA MARLOWE — Creative Technologist & Web / UI Designer | Portfolio</title>
+  <meta name="description" content="Official portfolio of DK & Alyssa Marlowe. Creative Technologist, Web & UI Designer crafting cinematic digital experiences and editorial web products.">
+  <meta name="keywords" content="Portfolio, Web Design, UI Designer, Creative Technologist, Alyssa Marlowe, DK, 30fps Scroll, Selected Works, Editorial">
+  <meta name="author" content="DK / Alyssa Marlowe">
+  
+  <!-- Open Graph / Meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="PORTFOLIO — Creative Web & UI Designer">
+  <meta property="og:description" content="Cinematic motion, high-frequency interaction, and editorial design elegance.">
+  <meta property="og:image" content="poster.webp">
+  
+  <!-- Google Fonts: JetBrains Mono, Plus Jakarta Sans, Syne, Playfair Display, Cormorant Garamond -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="is-loading">
+
+  <!-- Custom Cursor Elements -->
+  <div class="custom-cursor" id="custom-cursor"></div>
+  <div class="cursor-follower" id="cursor-follower"></div>
+
+  <!-- ========================================================================
+       REQUIREMENT 1: STABLE CORNER BOX COMPONENT
+       - Position: fixed at bottom right
+       - Stays rock-solid in exact same position, size, and shape while page scrolls
+       - Zero jitter, zero stretching, zero shaking, zero overlapping
+       - Background content and animations flow smoothly behind/around it
+       ======================================================================== -->
+  <aside class="stable-corner-box" id="stable-corner-box" aria-label="Playback Telemetry & Stream Status">
+    <div class="corner-box-inner">
+      <div class="corner-header-row">
+        <div class="stream-badge">
+          <span class="live-dot"></span>
+          <span class="stream-label">30 FPS STREAM</span>
+        </div>
+        <button class="corner-ctrl-btn" id="corner-play-btn" title="Toggle Auto Play / Scroll Scrub">
+          <svg class="ctrl-icon play-icon" viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+            <polygon points="5,3 19,12 5,21"></polygon>
+          </svg>
+          <span id="corner-play-text">AUTO-PLAY</span>
+        </button>
+      </div>
+      
+      <div class="corner-telemetry-row">
+        <span class="corner-timecode mono-text" id="corner-timecode">00:00:00:00</span>
+        <span class="corner-frame mono-text" id="corner-frame">FR 001 / 240</span>
+      </div>
+
+      <div class="corner-bottom-row">
+        <div class="corner-mini-track" title="Scroll Scrub Position">
+          <div class="corner-mini-fill" id="corner-mini-fill"></div>
+        </div>
+        <div class="corner-audio-toggle" id="corner-audio-btn" title="Toggle Ambient Audio">
+          <div class="corner-waves" id="corner-waves">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <span class="corner-audio-state mono-text" id="corner-audio-state">MUTE</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Preloader Screen -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-content">
+      <div class="preloader-monogram">DK</div>
+      <div class="preloader-title">INITIALIZING CINEMATIC STREAM</div>
+      <div class="preloader-sub">Synchronizing 240 frames at 30 FPS</div>
+      <div class="preloader-bar-wrapper">
+        <div class="preloader-bar" id="preloader-progress-bar"></div>
+      </div>
+      <div class="preloader-meta">
+        <span id="preloader-percentage">0%</span>
+        <span id="preloader-count">0 / 240 FRAMES</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Site Header & Navigation -->
+  <header class="site-header" id="site-header">
+    <div class="header-container">
+      <a href="#hero" class="brand-monogram">
+        <span class="brand-logo-text">DK</span>
+        <span class="brand-badge">STUDIO</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#hero" class="nav-link active" data-nav="hero">Cinematic</a>
+        <a href="#editorial-portfolio" class="nav-link" data-nav="editorial-portfolio">Portfolio</a>
+        <a href="#about" class="nav-link" data-nav="about">About</a>
+        <a href="#capabilities" class="nav-link" data-nav="capabilities">Arsenal</a>
+        <a href="#contact" class="nav-link" data-nav="contact">Contact</a>
+      </nav>
+
+      <div class="header-actions">
+        <div class="availability-indicator" title="Available for freelance & lead roles">
+          <span class="pulse-dot"></span>
+          <span class="status-text">AVAILABLE Q2/Q3</span>
+        </div>
+        <a href="#contact" class="btn btn-sm btn-primary">Let's Talk</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Wrapper -->
+  <main id="main-content">
+
+    <!-- HERO SECTION WITH PINNED CANVAS SCROLL ANIMATION -->
+    <section class="scroll-hero-section" id="hero">
+      <div class="hero-pinned-track" id="hero-track">
+        
+        <!-- Pinned Viewport Container -->
+        <div class="hero-sticky-stage" id="hero-stage">
+
+          <!-- Background Canvas for 30fps Video Scroll Scrub -->
+          <canvas id="hero-canvas" class="hero-canvas"></canvas>
+
+          <!-- Cinematic Vignette & Atmospheric Overlays -->
+          <div class="cinematic-overlay"></div>
+          <div class="noise-overlay"></div>
+
+          <!-- Top HUD Telemetry Display (Corner elements away from bottom right) -->
+          <div class="hud-telemetry">
+            <div class="hud-item hud-top-left">
+              <span class="hud-tag">STREAM ID</span>
+              <span class="hud-val">FLOW-30FPS // REC-09</span>
+            </div>
+            <div class="hud-item hud-top-right">
+              <span class="hud-tag">TIMECODE</span>
+              <span class="hud-val" id="hud-timecode">00:00:00:00</span>
+            </div>
+            <div class="hud-item hud-bottom-left">
+              <span class="hud-tag">SCRUB RENDERER</span>
+              <span class="hud-val" id="hud-frame-status">FRAME 001 / 240 [30 FPS]</span>
+            </div>
+          </div>
+
+          <!-- Scroll Progress HUD Meter (Left vertical rail) -->
+          <div class="scroll-progress-rail">
+            <div class="scroll-progress-fill" id="scroll-progress-fill"></div>
+            <span class="scroll-progress-label" id="scroll-percentage">0%</span>
+          </div>
+
+
+
+          <!-- Bottom subtle indicator -->
+          <div class="hero-footer-status">
+            <span class="mono-text">SCROLL DAMPING: 0.12 LERP</span>
+            <span class="mono-sep">/</span>
+            <span class="mono-text">HARDWARE ACCELERATED CANVAS</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         REQUIREMENT 2: RECREATED PORTFOLIO SECTION FROM REFERENCE IMAGE
+         - Clean warm ivory / off-white editorial aesthetic
+         - Large, sophisticated serif heading: "PORTFOLIO"
+         - Web & UI designer introduction, small uppercase labels, subtle spacing
+         - Large portrait image toward center integrated into layout
+         - Rotating circular stamp badge: "DESIGNING DIGITAL EXPERIENCES"
+         - Horizontal black showcase panel containing 4 project preview cards:
+           (Velure, Calm by Design, Savor, Forma Studio)
+         - Clean Services and My Process 3-column section below
+         - Featured project image with palm shadow and quote card:
+           "GOOD DESIGN IS NOT JUST HOW IT LOOKS..."
+         - Black editorial footer banner
+         ======================================================================== -->
+    <section class="editorial-portfolio-section" id="editorial-portfolio">
+      
+      <!-- Top Meta Bar -->
+      <div class="editorial-container">
+        <div class="editorial-top-meta">
+          <span class="meta-role">WEB & UI DESIGNER</span>
+          <span class="meta-year">✦ 2026</span>
+        </div>
+
+        <!-- Huge Serif Headline: PORTFOLIO -->
+        <h2 class="editorial-headline-portfolio">PORTFOLIO</h2>
+
+        <!-- Main Hero Intro & Portrait Stage -->
+        <div class="editorial-hero-grid">
+          
+          <!-- Left Intro Column -->
+          <div class="editorial-intro-col">
+            <span class="editorial-sub-label">CREATIVE</span>
+            <h3 class="editorial-role-title">
+              WEB & UI<br>DESIGNER
+            </h3>
+            <div class="editorial-gold-divider"></div>
+            <p class="editorial-bio-text">
+              I design thoughtful digital experiences that combine strategy, aesthetics, and clarity to help brands stand out.
+            </p>
+            <div class="editorial-author-name">
+              ALYSSA<br>MARLOWE
+            </div>
+          </div>
+
+          <!-- Center Large Portrait Image -->
+          <div class="editorial-portrait-col">
+            <div class="editorial-portrait-frame">
+              <img src="dk_portrait_main.jpg" alt="DK - Creative Web & UI Designer" class="editorial-portrait-img">
+            </div>
+          </div>
+
+          <!-- Right Rotating Stamp Emblem -->
+          <div class="editorial-stamp-col">
+            <div class="circular-stamp-badge" title="Designing Digital Experiences">
+              <svg class="stamp-svg" viewBox="0 0 200 200" width="160" height="160">
+                <path id="stamp-circle-path" d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0" fill="transparent" />
+                <text class="stamp-text">
+                  <textPath href="#stamp-circle-path" startOffset="0%">
+                    ✦ DESIGNING DIGITAL EXPERIENCES ✦ DESIGNING DIGITAL EXPERIENCES
+                  </textPath>
+                </text>
+              </svg>
+              <div class="stamp-center-monogram">
+                <span class="stamp-initial">A</span>
+                <span class="stamp-star">✦</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Horizontal Black Showcase Panel: 4 Project Preview Cards -->
+      <div class="editorial-black-showcase">
+        <div class="editorial-container">
+          
+          <div class="showcase-header-bar">
+            <span class="showcase-tag">SELECTED WORKS</span>
+            <div class="showcase-rule-line"></div>
+            <a href="#contact" class="showcase-view-link">VIEW ALL WORKS &rarr;</a>
+          </div>
+
+          <div class="showcase-cards-grid">
+            
+            <!-- Card 1: VELURE -->
+            <div class="showcase-card">
+              <div class="card-mockup-frame card-mockup-velure">
+                <div class="mockup-header-bar">
+                  <div class="mockup-dots"><span></span><span></span><span></span></div>
+                  <span class="mockup-domain">velure.luxury</span>
+                </div>
+                <div class="mockup-body">
+                  <img src="fashion_dark.jpg" alt="Velure Fashion Brand" class="mockup-bg-img">
+                  <div class="mockup-overlay-content">
+                    <h4 class="mockup-hero-title">VELURE</h4>
+                    <span class="mockup-pill-btn">TIMELESS ELEGANCE</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-caption">
+                <h5 class="card-client-title">VELURE</h5>
+                <span class="card-client-desc">FASHION BRAND<br>WEB DESIGN</span>
+              </div>
+            </div>
+
+            <!-- Card 2: CALM BY DESIGN -->
+            <div class="showcase-card">
+              <div class="card-mockup-frame card-mockup-calm">
+                <div class="mockup-header-bar light-bar">
+                  <div class="mockup-dots"><span></span><span></span><span></span></div>
+                  <span class="mockup-domain">calmbydesign.studio</span>
+                </div>
+                <div class="mockup-body">
+                  <img src="proj_calm.jpg" alt="Calm by Design Interior Studio" class="mockup-bg-img">
+                  <div class="mockup-overlay-content content-light">
+                    <h4 class="mockup-hero-title-light">Calm<br>by Design</h4>
+                    <span class="mockup-pill-btn-dark">EXPLORE SPACES</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-caption">
+                <h5 class="card-client-title">CALM BY DESIGN</h5>
+                <span class="card-client-desc">INTERIOR STUDIO<br>WEB DESIGN</span>
+              </div>
+            </div>
+
+            <!-- Card 3: SAVOR -->
+            <div class="showcase-card">
+              <div class="card-mockup-frame card-mockup-savor">
+                <div class="mockup-header-bar">
+                  <div class="mockup-dots"><span></span><span></span><span></span></div>
+                  <span class="mockup-domain">savor-dining.com</span>
+                </div>
+                <div class="mockup-body">
+                  <img src="proj_savor_dish.jpg" alt="Savor Restaurant" class="mockup-bg-img">
+                  <div class="mockup-overlay-content">
+                    <h4 class="mockup-hero-title-serif">SAVOR<br>THE MOMENT</h4>
+                    <span class="mockup-subtag">MODERN CUISINE WITH CHARACTER</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-caption">
+                <h5 class="card-client-title">SAVOR</h5>
+                <span class="card-client-desc">RESTAURANT<br>WEB DESIGN</span>
+              </div>
+            </div>
+
+            <!-- Card 4: FORMA STUDIO -->
+            <div class="showcase-card">
+              <div class="card-mockup-frame card-mockup-forma">
+                <div class="mockup-header-bar">
+                  <div class="mockup-dots"><span></span><span></span><span></span></div>
+                  <span class="mockup-domain">forma-architecture.io</span>
+                </div>
+                <div class="mockup-body">
+                  <img src="proj_arch.jpg" alt="Forma Studio Architecture" class="mockup-bg-img">
+                  <div class="mockup-overlay-content">
+                    <h4 class="mockup-hero-title-arch">ARCHITECTURE<br>THAT INSPIRES</h4>
+                    <span class="mockup-subtag">SCULPTURAL SPACES</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-caption">
+                <h5 class="card-client-title">FORMA STUDIO</h5>
+                <span class="card-client-desc">ARCHITECTURE FIRM<br>WEB DESIGN</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Services & Process 3-Column Section (Warm Ivory Backdrop) -->
+      <div class="editorial-services-section">
+        <div class="editorial-container">
+          <div class="services-process-grid">
+            
+            <!-- Column 1: SERVICES -->
+            <div class="services-col">
+              <div class="editorial-col-tag">SERVICES</div>
+              <ul class="editorial-services-list">
+                <li class="service-row">
+                  <span class="service-symbol">✦</span>
+                  <div class="service-text">
+                    <strong>WEB DESIGN</strong>
+                    <p>Custom, responsive website design</p>
+                  </div>
+                </li>
+                <li class="service-row">
+                  <span class="service-symbol">♡</span>
+                  <div class="service-text">
+                    <strong>UI / UX DESIGN</strong>
+                    <p>Intuitive interfaces that engage</p>
+                  </div>
+                </li>
+                <li class="service-row">
+                  <span class="service-symbol">⊞</span>
+                  <div class="service-text">
+                    <strong>BRAND EXPERIENCE</strong>
+                    <p>Visual systems that tell your story</p>
+                  </div>
+                </li>
+                <li class="service-row">
+                  <span class="service-symbol">✣</span>
+                  <div class="service-text">
+                    <strong>DESIGN STRATEGY</strong>
+                    <p>From concept to impact</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Vertical Divider with + Junctions -->
+            <div class="services-divider">
+              <span class="divider-cross">+</span>
+              <span class="divider-cross">+</span>
+              <span class="divider-cross">+</span>
+              <span class="divider-cross">+</span>
+            </div>
+
+            <!-- Column 2: MY PROCESS -->
+            <div class="process-col">
+              <div class="editorial-col-tag">MY PROCESS</div>
+              <ul class="editorial-process-list">
+                <li class="process-row">
+                  <span class="process-num">01</span>
+                  <div class="process-text">
+                    <strong>DISCOVER</strong>
+                    <p>Understanding your brand, audience, and goals.</p>
+                  </div>
+                </li>
+                <li class="process-row">
+                  <span class="process-num">02</span>
+                  <div class="process-text">
+                    <strong>DESIGN</strong>
+                    <p>Crafting wireframes and visual concepts.</p>
+                  </div>
+                </li>
+                <li class="process-row">
+                  <span class="process-num">03</span>
+                  <div class="process-text">
+                    <strong>DEVELOP</strong>
+                    <p>Bringing the design to life with precision.</p>
+                  </div>
+                </li>
+                <li class="process-row">
+                  <span class="process-num">04</span>
+                  <div class="process-text">
+                    <strong>DELIVER</strong>
+                    <p>Testing, refining, and launching with care.</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Column 3: Featured Project / Editorial Quote Image -->
+            <div class="quote-visual-col">
+              <div class="quote-visual-card">
+                <img src="dk_portrait_main.jpg" alt="DK Portrait" class="quote-bg-img">
+                <div class="quote-overlay-banner">
+                  <span class="quote-open-mark">“</span>
+                  <p class="quote-statement">
+                    GOOD DESIGN IS NOT JUST HOW IT LOOKS, IT’S HOW IT WORKS AND HOW IT MAKES PEOPLE FEEL.
+                  </p>
+                  <span class="quote-signature">A.M.</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Editorial Footer Banner -->
+      <div class="editorial-footer-banner">
+        <div class="editorial-container">
+          <div class="editorial-footer-grid">
+            
+            <div class="footer-col-left">
+              <h4 class="editorial-footer-callout">
+                LET'S CREATE<br>SOMETHING<br>BEAUTIFUL
+              </h4>
+              <span class="footer-star">✦</span>
+            </div>
+
+            <div class="footer-col-connect">
+              <span class="footer-col-tag">LET'S CONNECT</span>
+              <a href="mailto:hello@alyssamarlowe.com" class="footer-conn-link">hello@alyssamarlowe.com</a>
+              <span class="footer-conn-text">+1 (555) 123-4567</span>
+              <a href="https://www.alyssamarlowe.com" class="footer-conn-link">www.alyssamarlowe.com</a>
+              <span class="footer-conn-text">Based in New York, USA</span>
+            </div>
+
+            <div class="footer-col-follow">
+              <span class="footer-col-tag">FOLLOW</span>
+              <div class="footer-social-links">
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"> @alyssamarlowe.design</a>
+                <a href="https://behance.net" target="_blank" rel="noopener noreferrer"> behance.net/alyssamarlowe</a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"> linkedin.com/in/alyssamarlowe</a>
+                <a href="https://dribbble.com" target="_blank" rel="noopener noreferrer"> dribbble.com/alyssamarlowe</a>
+              </div>
+            </div>
+
+            <div class="footer-col-monogram">
+              <div class="editorial-monogram-am">
+                <span class="am-letter">A</span><span class="am-slash">/</span><span class="am-letter">M</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SECTION: ABOUT & BIOGRAPHY -->
+    <section class="section about-section" id="about">
+      <div class="container">
+        
+        <div class="section-header">
+          <div class="section-tag mono-text">01 // THE MANIFESTO</div>
+          <h2 class="section-title">Bridging Cinematic Vision and Engineering Logic</h2>
+        </div>
+
+        <div class="about-grid">
+          
+          <div class="about-bio-column">
+            <p class="lead-text">
+              I am <strong>DK</strong>, creative technologist and interaction developer collaborating with leading designers like <strong>Alyssa Marlowe</strong> to create visceral, tactile digital experiences.
+            </p>
+            <p class="body-text">
+              Over the last 6 years, we have navigated the intersection where haute creative direction meets low-level performance engineering. We architect the physics, calibrate the Bezier curves, and deploy resilient codebases that bring complex digital visions to life.
+            </p>
+            <p class="body-text">
+              Whether building an interactive 3D WebGL showcase, a bespoke product configurator, or a high-traffic design system, every project is an opportunity to set a new visual and technological benchmark.
+            </p>
+
+            <div class="about-stats-grid">
+              <div class="stat-card">
+                <span class="stat-number">6+</span>
+                <span class="stat-label">Years of Craft</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-number">40+</span>
+                <span class="stat-label">Shipped Projects</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-number">99%</span>
+                <span class="stat-label">Lighthouse Speed</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-number">12</span>
+                <span class="stat-label">Design Recognitions</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="about-card-column">
+            <div class="portrait-card" id="portrait-card">
+              <div class="portrait-image-wrapper">
+                <img src="dk_portrait.webp" alt="DK Portrait" class="portrait-img" loading="lazy">
+                <div class="portrait-glare"></div>
+              </div>
+              <div class="portrait-info">
+                <div class="portrait-name">DK</div>
+                <div class="portrait-title">Creative Technologist // Lead Interaction Designer</div>
+                <div class="portrait-location">
+                  <span class="loc-pin">📍</span> Based in India &bull; Working Worldwide
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: CAPABILITIES & TECHNICAL ARSENAL -->
+    <section class="section capabilities-section" id="capabilities">
+      <div class="container">
+        
+        <div class="section-header">
+          <div class="section-tag mono-text">02 // TECHNICAL ARSENAL</div>
+          <h2 class="section-title">Engineered with Precision. Styled with Passion.</h2>
+        </div>
+
+        <div class="capabilities-grid">
+          
+          <div class="capability-box">
+            <div class="cap-number mono-text">01</div>
+            <h3 class="cap-title">Creative Web Development</h3>
+            <p class="cap-desc">
+              Building dynamic, highly responsive web interfaces with vanilla JavaScript, modern frameworks, bespoke Canvas engines, and optimized WebGL shaders.
+            </p>
+            <ul class="cap-list">
+              <li>WebGL, Three.js & GLSL Shaders</li>
+              <li>Canvas 2D / 30fps Frame Sequencing</li>
+              <li>GSAP, ScrollTrigger & Lenis Physics</li>
+              <li>Zero-Dependency Vanilla JS Mastery</li>
+            </ul>
+          </div>
+
+          <div class="capability-box">
+            <div class="cap-number mono-text">02</div>
+            <h3 class="cap-title">Interface & Spatial Architecture</h3>
+            <p class="cap-desc">
+              Designing scalable design tokens, micro-interactions, dark mode color harmonies, and tactile user feedback that elevates software to art.
+            </p>
+            <ul class="cap-list">
+              <li>High-Density Design Systems</li>
+              <li>Figma to Code 1:1 Fidelity</li>
+              <li>Accessibility & Kinetic Micro-Interactions</li>
+              <li>Spatial & HUD Telemetry Design</li>
+            </ul>
+          </div>
+
+          <div class="capability-box">
+            <div class="cap-number mono-text">03</div>
+            <h3 class="cap-title">Performance & Optimization</h3>
+            <p class="cap-desc">
+              Ensuring 60fps render loops, sub-second TTFB, asset compression, GPU offloading, and pristine mobile performance across diverse devices.
+            </p>
+            <ul class="cap-list">
+              <li>Hardware-Accelerated Compositing</li>
+              <li>Asset Pipeline & WebP Streaming</li>
+              <li>Lighthouse 95+ Performance Audits</li>
+              <li>Responsive Dynamic Damping</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- Interactive Skills Pills -->
+        <div class="tech-pills-row">
+          <span class="tech-pill">JavaScript ES2026</span>
+          <span class="tech-pill">HTML5 Canvas API</span>
+          <span class="tech-pill">CSS3 Architecture</span>
+          <span class="tech-pill">WebGL / Shaders</span>
+          <span class="tech-pill">Web Audio API</span>
+          <span class="tech-pill">Video Scrub Pipelines</span>
+          <span class="tech-pill">Editorial Typography</span>
+          <span class="tech-pill">Figma Prototyping</span>
+          <span class="tech-pill">Motion Choreography</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: INTERACTIVE CANVAS PLAYGROUND -->
+    <section class="section playground-section">
+      <div class="container">
+        
+        <div class="playground-card">
+          <div class="playground-header">
+            <div>
+              <div class="section-tag mono-text">03 // INTERACTIVE PLAYGROUND</div>
+              <h3 class="playground-title">Kinetic Energy Field</h3>
+              <p class="playground-subtitle">Move your cursor or touch to manipulate the live physics particle mesh.</p>
+            </div>
+            <div class="playground-controls">
+              <button class="btn btn-sm btn-ghost" id="reset-particles-btn">Reset Field</button>
+            </div>
+          </div>
+          <div class="playground-canvas-wrapper">
+            <canvas id="playground-canvas"></canvas>
+            <div class="playground-hint mono-text">INTERACTIVE &bull; 120 DYNAMIC NODES</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: CONTACT & CONNECT -->
+    <section class="section contact-section" id="contact">
+      <div class="container">
+        
+        <div class="contact-box">
+          
+          <div class="contact-header">
+            <div class="section-tag mono-text">04 // INITIATE TRANSMISSION</div>
+            <h2 class="contact-headline">Let's Build Something <span class="gradient-text">Iconic Together.</span></h2>
+            <p class="contact-desc">
+              Have an ambitious vision, a flagship design overhaul, or an interactive installation in mind? Currently accepting select projects for Q2/Q3 2026.
+            </p>
+          </div>
+
+          <div class="contact-grid">
+            
+            <!-- Contact Form -->
+            <form class="contact-form" id="contact-form">
+              <div class="form-group">
+                <label for="form-name" class="form-label">YOUR NAME</label>
+                <input type="text" id="form-name" class="form-input" placeholder="e.g. Elena Rostova" required>
+              </div>
+
+              <div class="form-group">
+                <label for="form-email" class="form-label">YOUR EMAIL</label>
+                <input type="email" id="form-email" class="form-input" placeholder="elena@studio.design" required>
+              </div>
+
+              <div class="form-group">
+                <label for="form-scope" class="form-label">PROJECT SCOPE</label>
+                <select id="form-scope" class="form-input form-select">
+                  <option value="editorial">Editorial Portfolio & Brand Identity</option>
+                  <option value="cinematic">Cinematic Web & Scroll Experience</option>
+                  <option value="creative-dev">Creative Development / WebGL</option>
+                  <option value="consulting">Creative Technical Consulting</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="form-message" class="form-label">PROJECT DETAILS</label>
+                <textarea id="form-message" class="form-input form-textarea" rows="4" placeholder="Tell us about your vision, timeline, and goals..." required></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-submit" id="submit-btn">
+                <span>Transmit Message</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+
+              <div class="form-feedback" id="form-feedback"></div>
+            </form>
+
+            <!-- Direct Contact Info & Socials -->
+            <div class="contact-sidebar">
+              <div class="contact-info-block">
+                <span class="info-label mono-text">DIRECT DISPATCH</span>
+                <a href="mailto:hello@alyssamarlowe.com" class="direct-email" id="direct-email-link">
+                  hello@alyssamarlowe.com
+                </a>
+                <button class="btn btn-xs btn-ghost copy-email-btn" id="copy-email-btn">
+                  <span>Copy Address</span>
+                </button>
+              </div>
+
+              <div class="contact-info-block">
+                <span class="info-label mono-text">CURRENT TIME & LOCATION</span>
+                <div class="local-time-card">
+                  <span class="time-city">New York &bull; Bengaluru</span>
+                  <span class="time-clock mono-text" id="live-clock">18:57:00 IST</span>
+                  <span class="time-status mono-text">&bull; UTC+05:30</span>
+                </div>
+              </div>
+
+              <div class="contact-info-block">
+                <span class="info-label mono-text">CHANNELS</span>
+                <div class="social-links-list">
+                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-pill">Instagram &nearr;</a>
+                  <a href="https://behance.net" target="_blank" rel="noopener noreferrer" class="social-pill">Behance &nearr;</a>
+                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-pill">LinkedIn &nearr;</a>
+                  <a href="https://dribbble.com" target="_blank" rel="noopener noreferrer" class="social-pill">Dribbble &nearr;</a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-left">
+        <span class="footer-logo mono-text">DK / ALYSSA MARLOWE STUDIO &copy; 2026</span>
+        <span class="footer-meta">Cinematic 30FPS Canvas & Editorial Portfolio Architecture.</span>
+      </div>
+      <div class="footer-right">
+        <a href="#hero" class="back-to-top mono-text" id="back-to-top-btn">
+          Back to Top &uarr;
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
+</body>
+</html>
